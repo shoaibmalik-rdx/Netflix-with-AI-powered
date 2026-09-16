@@ -1,14 +1,18 @@
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { useSelector } from "react-redux" 
+import { useDispatch, useSelector } from "react-redux" 
+import { useEffect } from "react";
+import { addUser, removeUser } from "../utils/userSlice"
+import { LOGO } from "../utils/constants"
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const user = useSelector(store => store.user)
   //console.log(user);
   
-  const navigate = useNavigate();
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -19,11 +23,33 @@ const Header = () => {
       });
   };
 
+
+   useEffect(() => {
+    // when the onAuthStateChanged run? jab user signin/ signup/ signout tab run hota h  
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    
+      if (user) {
+        // Whenever User signin/ signUp this part will executed
+        const {uid, email, displayName, photoURL} = user;
+        dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
+        navigate("/browse")
+      } else {
+        console.log('remove wala');
+        // User is signed out this part will executed
+        dispatch(removeUser())
+        navigate("/")
+      }
+    });
+
+    // Unsubscribe when component unmounts
+    return () => unsubscribe()
+  }, []);
+
   return (
-    <div className="relative z-10 border-b-[0.1px] flex justify-between w-full items-center border-[#4c2424]">
+    <div className="absolute top-0 bg-gradient-to-b from-black/90 z-20 flex justify-between w-full items-center">
       <img
-        className=" h-20 w-48 ml-40 "
-        src="https://help.nflxext.com/helpcenter/OneTrust/oneTrust_production_2026-08-21/consent/87b6a5c0-0104-4e96-a291-092c11350111/019ae4b5-d8fb-7693-90ba-7a61d24a8837/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
+        className=" h-20 w-48 ml-12 "
+        src={ LOGO }
         alt="logo"
       />
 

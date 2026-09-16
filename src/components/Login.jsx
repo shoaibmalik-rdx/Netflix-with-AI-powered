@@ -1,4 +1,4 @@
-//import { Link } from "react-router-dom";
+
 import Header from "./Header";
 import { useRef, useState } from "react";
 import { checkValidData } from "../utils/validate";
@@ -8,15 +8,14 @@ import {
   updateProfile
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice"
+import { NETFLIX_BG, USER_AVATAR } from "../utils/constants"
 
 // ctrl + shift + L
 const Login = () => {
 
   const dispatch = useDispatch()
-  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(null);
   const name = useRef(null)
@@ -43,13 +42,12 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhiJKMksPDVHkBTk5lSyUGhnzQeIR65FyMW3Z1j5EtJQ&s=10",
+            photoURL: USER_AVATAR
           })
             .then(() => {
               const {uid, email, displayName, photoURL} = auth.currentUser;
               // yaha dispatch is wajah se kara, body me displayName, photoURL ki value nhi aa rhi thi
               dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
-              navigate("/browse");
             })
             .catch((error) => {
               setShowErrorMessage(error.message)
@@ -71,8 +69,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user.email);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -88,7 +84,7 @@ const Login = () => {
       <div>
         <img
           className="absolute top-0 z-0 h-screen w-full"
-          src="https://occ-0-5200-3996.1.nflxso.net/dnm/api/v6/iMyKkw5SVrkCXbCfSBEb_Pjar5Y/AAAAQBTxE26zgLJoqZnmxUCfZtVJ2HbJUsVonZ_9Uo-pn68zarPK.png"
+          src={ NETFLIX_BG }
           alt="bg"
         />
       </div>
