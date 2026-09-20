@@ -20,7 +20,10 @@
 - Plaining for MainContainer & Secondry container 
 - fetch Data for Trailer videos
 - Update store with Trailer video data
-- 
+- Build Movie List 
+- Build Movie Card
+- GPT Search Page
+- Multi-Language Feature in our App
 
 
 

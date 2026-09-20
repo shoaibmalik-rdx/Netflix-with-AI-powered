@@ -10,3 +10,11 @@ export const API_OPTIONS = {
         Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZmY5MWFmMjFmMjJjZDJjYzc4NDhkMDA2NTNjMDBiMSIsIm5iZiI6MTc4OTQ1MjgxOS4zNzUsInN1YiI6IjZhYThlMjEzYTM1ZTk0MzkzMzQ1MjBjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8NHz_iBCoRNkf2-XmCgQ5IGSqOUGzMojmHySLSeC1HY"
     }
 }
+
+export const IMG_CDN_URL = "https://image.tmdb.org/t/p/w500"
+
+export const SUPPORTED_LANGUAGES = [
+    {identifier: "en", name: "English"},
+    {identifier: "hindi", name: "Hindi"},
+    {identifier: "spanish", name: "spanish"}
+]
