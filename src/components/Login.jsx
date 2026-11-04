@@ -1,35 +1,33 @@
-
 import Header from "./Header";
 import { useRef, useState } from "react";
 import { checkValidData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateProfile
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
-import { addUser } from "../utils/userSlice"
-import { NETFLIX_BG, USER_AVATAR } from "../utils/constants"
+import { addUser } from "../utils/userSlice";
+import { NETFLIX_BG, USER_AVATAR } from "../utils/constants";
 
 // ctrl + shift + L
 const Login = () => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [isSignIn, setIsSignIn] = useState(true);
   const [showErrorMessage, setShowErrorMessage] = useState(null);
-  const name = useRef(null)
+  const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
   const toggleSignInForm = () => setIsSignIn(!isSignIn);
 
   const formValidate = () => {
-    const message = checkValidData(email.current.value, password.current.value);
+    const message = checkValidData(email.current.value, password.current.value, name.current?.value );
     setShowErrorMessage(message);
 
     if (message) return;
-
+    
     // Sign In / Sign Up Authentication Logic
     if (!isSignIn) {
       createUserWithEmailAndPassword(
@@ -42,22 +40,27 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: USER_AVATAR
+            photoURL: USER_AVATAR,
           })
             .then(() => {
-              const {uid, email, displayName, photoURL} = auth.currentUser;
+              const { uid, email, displayName, photoURL } = auth.currentUser;
               // yaha dispatch is wajah se kara, body me displayName, photoURL ki value nhi aa rhi thi
-              dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                }),
+              );
             })
             .catch((error) => {
-              setShowErrorMessage(error.message)
-            });          
+              setShowErrorMessage(error.message);
+            });
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
+        .catch(() => {
           setShowErrorMessage(
-            "user already register" /* errorCode + "-" + errorMessage */,
+            "user already register"
           );
         });
     } else {
@@ -70,74 +73,80 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
         })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setShowErrorMessage(errorCode + "-" + errorMessage);
+        .catch(() => {
+          setShowErrorMessage("Email or password is invalid");
         });
     }
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-full w-full">
       <Header />
-      <div>
+      <div className="relative">
         <img
-          className="absolute top-0 z-0 h-screen w-full"
-          src={ NETFLIX_BG }
+          className="absolute inset-0 h-screen w-full object-cover z-0 "
+          src={NETFLIX_BG}
           alt="bg"
         />
+
+        <div className="absolute inset-0 h-screen opacity-70 w-full bg-black  z-10 "></div>
       </div>
 
-      <div className="relative z-10 flex flex-col justify-center items-center mt-10">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Enter your info to {isSignIn ? "Sign in" : "Sign Up"}
+      <div className="relative z-10  flex h-screen flex-col justify-center items-center sm:px-8 px-4 ">
+        <div className="w-full max-w-lg bg-black/90 sm:px-10 px-6 sm:py-12 py-8 rounded-lg ">
+          <h1 className="text-4xl  mb-10 font-bold">
+            {isSignIn ? "Sign in" : "Sign Up"}
           </h1>
-
-          <p className="mb-6 mt-2 text-xl text-start text-gray-300">
-            Or get started with a new account.
-          </p>
 
           <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
             {!isSignIn && (
-              <input ref={name}
-                className="p-4 border-1 border-white rounded-md mb-6 w-[510px] bg-[#1c1213]"
+              <input
+                ref={name}
+                className="sm:p-4 p-3 border-1 border-white rounded-md mb-5 w-full bg-black/90"
                 type="text"
-                placeholder="Enter Full Name"
-                
+                placeholder="Name"
               />
             )}
 
             <input
               ref={email}
-              className="p-4 border-1 border-white rounded-md w-[510px] bg-[#1c1213]"
+              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-black/90"
               type="email"
               placeholder="Email or mobile number"
             />
             <input
               ref={password}
-              className="p-4 border-1 border-white rounded-md w-[510px] bg-[#1c1213] mt-6 "
+              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-black/90 mt-6"
               type="password"
               placeholder="Password"
             />
+
+            {!isSignIn && (
+              <h3 className="text-gray-600 mt-2 text-sm font-semibold">
+                Password must contain at least 8 characters and 1 capital
+                letter.
+              </h3>
+            )}
+
             <button
-              className="active:scale-95 text-xl font-bold py-3 bg-[#e50914] mt-4 rounded-md"
+              className="active:scale-95 text-xl font-bold py-3 hover:opacity-90 bg-[#e50914] mt-5 rounded-md"
               onClick={formValidate}
             >
-              Continue
+              {isSignIn ? "Sign In" : "Sign Up"}
             </button>
           </form>
 
-          <h3 className="font-bold my-4 text-red-700">{showErrorMessage}</h3>
+          <h3 className="font-bold my-4 p-0 text-red-700 ">
+            {showErrorMessage}
+          </h3>
 
-          <div className="flex gap-2 mt-4">
-            <h3>New to Netflix?</h3>
+          <div className=" space-x-2 mt-6 text-gray-400 sm:text-base text-sm">
+              {isSignIn ? "New to Netflix?  " : "Already have an account? "}
             <a
-              className="font-bold cursor-pointer hover:underline"
+              className="font-semibold text-white cursor-pointer hover:underline"
               onClick={toggleSignInForm}
             >
-              {isSignIn ? "Sign Up Now" : "Sign In"}
+              {isSignIn ? "Sign Up Now" : "Sign In Now"}
             </a>
           </div>
         </div>

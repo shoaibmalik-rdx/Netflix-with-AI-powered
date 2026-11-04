@@ -1,87 +1,114 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux" 
+import { LogOut, Search, House } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { addUser, removeUser } from "../utils/userSlice"
-import { LOGO, SUPPORTED_LANGUAGES } from "../utils/constants"
-import { toggleGptSearchView } from "../utils/gptSearch";
+import { addUser, removeUser } from "../utils/userSlice";
+import { LOGO, SUPPORTED_LANGUAGES } from "../utils/constants";
+import { toggleGptSearchView } from "../utils/gptSlice";
 import { changeLanguage } from "../utils/configSlice";
+import lang from "../utils/languageConstants";
+
 
 const Header = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const user = useSelector(store => store.user)
-  const showGptSearch = useSelector(store => store.gpt.showGptSearch)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
+  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+  const langKey = useSelector(store => store.config.lang)
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         navigate("/");
       })
       .catch((error) => {
-        navigate(error,"Error: 404");
+        navigate(error, "Error: 404");
       });
   };
 
-
-   useEffect(() => {
-    // when the onAuthStateChanged run? jab user signin/ signup/ signout tab run hota h  
+  useEffect(() => {
+    // when the onAuthStateChanged run? jab user signin/ signup/ signout tab run hota h
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-    
       if (user) {
         // Whenever User signin/ signUp this part will executed
-        const {uid, email, displayName, photoURL} = user;
-        dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}))
-        navigate("/browse")
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          }),
+        );
+        navigate("/browse");
       } else {
-        console.log('remove wala');
         // User is signed out this part will executed
-        dispatch(removeUser())
-        navigate("/")
+        dispatch(removeUser());
+        navigate("/");
       }
     });
 
     // Unsubscribe when component unmounts
-    return () => unsubscribe()
+    return () => unsubscribe();
   }, []);
-
 
   const handleGptSearchClick = () => {
     // Toggle GPT Search
-    dispatch(toggleGptSearchView())
-  }
+    dispatch(toggleGptSearchView());
+  };
 
   const handleLanguageChange = (e) => {
-    dispatch(changeLanguage(e.target.value))
-    
-  }
-  
+    dispatch(changeLanguage(e.target.value));
+  };
+
+
+
   return (
-    <div className="absolute top-0 bg-gradient-to-b from-black/90 z-20 flex justify-between w-full items-center">
+    <div className="absolute sm:pt-0 pt-1 top-0 bg-gradient-to-b from-black/90 z-50 flex justify-between w-full items-center">
       <img
-        className=" h-20 w-48 ml-12 "
-        src={ LOGO }
+        className=" sm:h-20 h-12 sm:w-48 w-30 sm:ml-2 ml-0 "
+        src={LOGO}
         alt="logo"
       />
 
-      {user && <div className="flex mr-10 items-center gap-2">
+      {user && (
+        <div className="flex sm:mr-6 mr-2 items-center sm:gap-x-4 gap-x-2">
+            <select
+              onChange={handleLanguageChange}
+              className="sm:relative absolute bg-black border-[1px] border-gray-600 outline-none sm:p-[9px] px-2 py-1 sm:top-0 sm:right-0 top-13 right-2 text-white rounded-md"
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.name} value={lang.identifier}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
 
+            <button
+              onClick={handleGptSearchClick}
+              className="flex gap-2 hover:bg-red-700 bg-red-500 py-2 items-center active:scale-95  px-3 rounded-md cursor-pointer text-white font-semibold"
+            >
+              {showGptSearch ? <House className=" sm:h-5 h-3 sm:w-5 w-4" /> : <Search className=" sm:h-5 h-3 sm:w-5 w-4" /> }
+              
+              
+              <a className="sm:block hidden">
+                {showGptSearch ? `${lang[langKey].homePageBtn}` : `Gpt ${lang[langKey].search} `}
+              </a>
+            </button>
 
-        { showGptSearch && <select onChange={handleLanguageChange} className="bg-gray-900 p-2 m-2 text-white rounded-md">
-          
-        {SUPPORTED_LANGUAGES.map((lang) => <option key={lang.identifier} value={lang.identifier} >{lang.name}</option>)}
-          
-        </select> }
-
-        <button onClick={handleGptSearchClick} className="bg-cyan-900 active:scale-95 py-2 px-4 rounded-md mx-6 text-white font-bold"> {showGptSearch ? "Home Page" : "Gpt Search"}</button>
-
-        <img className="h-12 w-12 rounded-[50%]" src={user.photoURL} alt="profile-photo" />
-        <h2  className="text-2xl font-bold ">
-          SignOut
-        </h2>
-        <LogOut onClick={handleSignOut} className="cursor-pointer" />
-      </div>}
+            <div
+              onClick={handleSignOut}
+              className="cursor-pointer hover:bg-red-700 bg-red-500 rounded-md sm:px-4 flex items-center"
+            >
+              <LogOut className="sm:block hidden h-5 w-5" />
+              <h2 className="sm:text-base text-sm  px-2 sm:py-2  py-[4px] font-semibold ">
+                {lang[langKey].signOut}
+              </h2>
+            </div>
+        </div>
+      )}
     </div>
   );
 };

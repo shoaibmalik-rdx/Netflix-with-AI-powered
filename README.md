@@ -1,5 +1,5 @@
 
-# Netflix-with-GPT
+# Netflix GPT
 
 - Routing of App
 - login Form 
@@ -24,7 +24,11 @@
 - Build Movie Card
 - GPT Search Page
 - Multi-Language Feature in our App
-
+- Get API Key
+- fetched gptMovieSuggestions from TMDB
+- Reuse movie list Component to make movie suggestion container
+- Memoization
+- Adding .env file to gitignore
 
 
 # Features
@@ -32,3 +36,11 @@
     - Sign In / Sign Up Form
     - Form Validation
     - redirect to Browse Page
+- Browse (after Authentication)
+    - Header
+    - Movie Trailer in BG
+    - Title & Description
+    - Movie List & Movie Card
+- GPT Search mocie
+    - Search Bar
+    - Movies Suggestion
