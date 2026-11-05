@@ -66,12 +66,14 @@ const Header = () => {
 
 
   return (
-    <div className="absolute sm:pt-0 pt-1 top-0 bg-gradient-to-b from-black/90 z-50 flex justify-between w-full items-center">
+    <div className="absolute sm:pt-3 pt-1 top-0 bg-gradient-to-b from-black/90 z-50 flex justify-between w-full items-center">
       <img
         className=" sm:h-20 h-12 sm:w-48 w-30 sm:ml-2 ml-0 "
         src={LOGO}
         alt="logo"
       />
+  
+     {/* <h1 className="sm:text-4xl text-3xl font-bold text-red-600 sm:ml-12 ml-2 mb-2">Netsflix</h1> */}
 
       {user && (
         <div className="flex sm:mr-6 mr-2 items-center sm:gap-x-4 gap-x-2">
