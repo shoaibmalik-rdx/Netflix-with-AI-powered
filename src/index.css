@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@theme {
+  --color-red-500: #fb2c36;
+  --color-red-600: #e7000b;
+  --color-red-700: #c10007;
+  --color-yellow-800: #894b00;
+  --color-gray-400: #99a1af;
+  --color-gray-500: #6a7282;
+  --color-gray-600: #4a5565;
+  --color-gray-700: #364153;
+}
+
+@layer base {
+  :root {
+    color-scheme: only light;
+  }
+  html,
+  body {
+    background-color: #000;
+    color: #fff;
+  }
+}
