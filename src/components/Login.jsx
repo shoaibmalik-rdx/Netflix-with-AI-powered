@@ -102,7 +102,7 @@ const Login = () => {
             {!isSignIn && (
               <input
                 ref={name}
-                className="sm:p-4 p-3 border-1 border-white rounded-md mb-5 w-full bg-black/90"
+                className="sm:p-4 p-3 border-1 border-white rounded-md mb-5 w-full bg-gray-800"
                 type="text"
                 placeholder="Name"
               />
@@ -110,13 +110,13 @@ const Login = () => {
 
             <input
               ref={email}
-              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-black/90"
+              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-gray-800"
               type="email"
               placeholder="Email or mobile number"
             />
             <input
               ref={password}
-              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-black/90 mt-6"
+              className="sm:p-4 p-3 border-1 border-white rounded-md w-full bg-gray-800 mt-6"
               type="password"
               placeholder="Password"
             />
@@ -141,7 +141,7 @@ const Login = () => {
           </h3>
 
           <div className=" space-x-2 mt-6 text-gray-400 sm:text-base text-sm">
-              {isSignIn ? "New to Netflix?  " : "Already have an account? "}
+              {isSignIn ? "New Person?  " : "Already have an account? "}
             <a
               className="font-semibold text-white cursor-pointer hover:underline"
               onClick={toggleSignInForm}
@@ -151,6 +151,9 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      <h1 className="text-[10px] text-black absolute -bottom-1 left-0 m-1">Disclaimer: This is a personal student portfolio project for educational purpose only</h1>
+
     </div>
   );
 };
